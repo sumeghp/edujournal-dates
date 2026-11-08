@@ -13,8 +13,9 @@ It is the journal counterpart to [Edu conferences dates](https://github.com/sume
 - Live countdowns for every deadline, with the next one front and centre
 - A six-week calendar showing each deadline on its day
 - Filters by topic, publisher and status, an **Open access** toggle, plus search across journals, call titles and guest editors
-- Sorting by next deadline, most time left, final deadline or journal name
-- Journal details for each call: publisher, publishing model (open access, diamond OA, hybrid, subscription) and, where the publisher states them, metrics
+- Sorting by next deadline, most time left, final deadline, journal name or impact factor
+- Each journal's Clarivate Journal Impact Factor next to its name, like SLE (IF 17.9), with a **Has IF** filter; journals without one show (no IF)
+- Journal details for each call: publisher, publishing model (open access, diamond OA, hybrid, subscription) and other metrics where the publisher states them
 - Times shown in your own time zone, Anywhere on Earth, IST, UTC and others
 - Star the calls you care about (saved in your browser)
 - One-click Google Calendar links, or copy deadlines as `.ics`
@@ -39,7 +40,7 @@ All data lives in [`data.js`](data.js). Add the journal once to `JOURNALS`:
 ```js
 sle: { short: "SLE", name: "Smart Learning Environments", publisher: "Springer",
        model: "Open access",            // Open access | Diamond OA | Hybrid | Subscription
-       metric: "JIF 17.9 (2025)",       // optional; only if the publisher's page states it
+       jif: 17.9, jifYear: 2025,        // optional: Journal Impact Factor and the JCR release it is from
        url: "https://link.springer.com/journal/40561" }
 ```
 

@@ -20,34 +20,36 @@ window.TOPICS = {
 };
 
 // model: 'Open access' | 'Diamond OA' (free to read and publish) | 'Hybrid' | 'Subscription'
-// metric: optional, only where the publisher's own page states it
+// jif: Clarivate Journal Impact Factor, jifYear: the JCR release it comes from (2025 = released June 2026).
+// Leave jif out if the journal has no JIF or none could be confirmed; the site then shows (no IF).
+// metric: optional extra (CiteScore, APC, indexing), only where the publisher's own page states it
 window.JOURNALS = {
-  etrd:   { short: "ETR&D", name: "Educational Technology Research and Development", publisher: "Springer", model: "Hybrid", metric: "JIF 5.6 (2025)", url: "https://link.springer.com/journal/11423" },
-  sle:    { short: "SLE", name: "Smart Learning Environments", publisher: "Springer", model: "Open access", metric: "JIF 17.9 (2025)", url: "https://link.springer.com/journal/40561" },
-  ijstem: { short: "IJ STEM Ed", name: "International Journal of STEM Education", publisher: "Springer", model: "Open access", metric: "JIF 10.7 (2025)", url: "https://link.springer.com/journal/40594" },
-  tkl:    { short: "TKL", name: "Technology, Knowledge and Learning", publisher: "Springer", model: "Hybrid", metric: "JIF 4.2 (2025)", url: "https://link.springer.com/journal/10758" },
-  jset:   { short: "JSET", name: "Journal of Science Education and Technology", publisher: "Springer", model: "Hybrid", metric: "JIF 5.5 (2025)", url: "https://link.springer.com/journal/10956" },
+  etrd:   { short: "ETR&D", jif: 5.6, jifYear: 2025, name: "Educational Technology Research and Development", publisher: "Springer", model: "Hybrid", url: "https://link.springer.com/journal/11423" },
+  sle:    { short: "SLE", jif: 17.9, jifYear: 2025, name: "Smart Learning Environments", publisher: "Springer", model: "Open access", url: "https://link.springer.com/journal/40561" },
+  ijstem: { short: "IJ STEM Ed", jif: 10.7, jifYear: 2025, name: "International Journal of STEM Education", publisher: "Springer", model: "Open access", url: "https://link.springer.com/journal/40594" },
+  tkl:    { short: "TKL", jif: 4.2, jifYear: 2025, name: "Technology, Knowledge and Learning", publisher: "Springer", model: "Hybrid", url: "https://link.springer.com/journal/10758" },
+  jset:   { short: "JSET", jif: 5.5, jifYear: 2025, name: "Journal of Science Education and Technology", publisher: "Springer", model: "Hybrid", url: "https://link.springer.com/journal/10956" },
   disced: { short: "Discover Ed", name: "Discover Education", publisher: "Springer", model: "Open access", metric: "Scopus, DOAJ", url: "https://link.springer.com/journal/44217" },
-  nzjes:  { short: "NZJES", name: "New Zealand Journal of Educational Studies", publisher: "Springer", model: "Hybrid", url: "https://link.springer.com/journal/40841" },
-  rise:   { short: "RISE", name: "Research in Science Education", publisher: "Springer", model: "Hybrid", url: "https://link.springer.com/journal/11165" },
-  ijsme:  { short: "IJSME", name: "International Journal of Science and Mathematics Education", publisher: "Springer", model: "Hybrid", url: "https://link.springer.com/journal/10763" },
-  aper:   { short: "APER", name: "The Asia-Pacific Education Researcher", publisher: "Springer", model: "Hybrid", url: "https://link.springer.com/journal/40299" },
-  eeaa:   { short: "EEAA", name: "Educational Assessment, Evaluation and Accountability", publisher: "Springer", model: "Hybrid", url: "https://link.springer.com/journal/11092" },
+  nzjes:  { short: "NZJES", jif: 1.5, jifYear: 2024, name: "New Zealand Journal of Educational Studies", publisher: "Springer", model: "Hybrid", url: "https://link.springer.com/journal/40841" },
+  rise:   { short: "RISE", jif: 3.1, jifYear: 2025, name: "Research in Science Education", publisher: "Springer", model: "Hybrid", url: "https://link.springer.com/journal/11165" },
+  ijsme:  { short: "IJSME", jif: 2.8, jifYear: 2025, name: "International Journal of Science and Mathematics Education", publisher: "Springer", model: "Hybrid", url: "https://link.springer.com/journal/10763" },
+  aper:   { short: "APER", jif: 4.6, jifYear: 2024, name: "The Asia-Pacific Education Researcher", publisher: "Springer", model: "Hybrid", url: "https://link.springer.com/journal/40299" },
+  eeaa:   { short: "EEAA", jif: 1.6, jifYear: 2024, name: "Educational Assessment, Evaluation and Accountability", publisher: "Springer", model: "Hybrid", url: "https://link.springer.com/journal/11092" },
   csse:   { short: "CSSE", name: "Cultural Studies of Science Education", publisher: "Springer", model: "Hybrid", url: "https://link.springer.com/journal/11422" },
   caeai:  { short: "C&E: AI", name: "Computers and Education: Artificial Intelligence", publisher: "Elsevier", model: "Open access", metric: "CiteScore 28.7 · APC US$2,880", url: "https://www.sciencedirect.com/journal/computers-and-education-artificial-intelligence" },
-  see:    { short: "SEE", name: "Studies in Educational Evaluation", publisher: "Elsevier", model: "Hybrid", url: "https://www.sciencedirect.com/journal/studies-in-educational-evaluation" },
-  tate:   { short: "TATE", name: "Teaching and Teacher Education", publisher: "Elsevier", model: "Hybrid", url: "https://www.sciencedirect.com/journal/teaching-and-teacher-education" },
-  jee:    { short: "JEE", name: "Journal of Engineering Education", publisher: "Wiley", model: "Hybrid", url: "https://onlinelibrary.wiley.com/journal/21689830" },
-  eje:    { short: "EJE", name: "European Journal of Education", publisher: "Wiley", model: "Hybrid", url: "https://onlinelibrary.wiley.com/journal/14653435" },
-  jrte:   { short: "JRTE", name: "Journal of Research on Technology in Education", publisher: "Taylor & Francis", model: "Hybrid", url: "https://www.tandfonline.com/journals/ujrt20" },
-  ijmest: { short: "IJMEST", name: "International Journal of Mathematical Education in Science and Technology", publisher: "Taylor & Francis", model: "Hybrid", url: "https://www.tandfonline.com/journals/tmes20" },
-  herd:   { short: "HERD", name: "Higher Education Research & Development", publisher: "Taylor & Francis", model: "Hybrid", url: "https://www.tandfonline.com/journals/cher20" },
-  ijse:   { short: "IJSE", name: "International Journal of Science Education", publisher: "Taylor & Francis", model: "Hybrid", url: "https://www.tandfonline.com/journals/tsed20" },
-  jsdse:  { short: "JSDSE", name: "Journal of Statistics and Data Science Education", publisher: "Taylor & Francis", model: "Open access", url: "https://www.tandfonline.com/journals/ujse21" },
-  infedu: { short: "INFEDU", name: "Informatics in Education", publisher: "Vilnius University", model: "Diamond OA", url: "https://infedu.vu.lt/journal/INFEDU" },
+  see:    { short: "SEE", jif: 3.9, jifYear: 2025, name: "Studies in Educational Evaluation", publisher: "Elsevier", model: "Hybrid", url: "https://www.sciencedirect.com/journal/studies-in-educational-evaluation" },
+  tate:   { short: "TATE", jif: 4.3, jifYear: 2025, name: "Teaching and Teacher Education", publisher: "Elsevier", model: "Hybrid", url: "https://www.sciencedirect.com/journal/teaching-and-teacher-education" },
+  jee:    { short: "JEE", jif: 5.3, jifYear: 2025, name: "Journal of Engineering Education", publisher: "Wiley", model: "Hybrid", url: "https://onlinelibrary.wiley.com/journal/21689830" },
+  eje:    { short: "EJE", jif: 3.6, jifYear: 2024, name: "European Journal of Education", publisher: "Wiley", model: "Hybrid", url: "https://onlinelibrary.wiley.com/journal/14653435" },
+  jrte:   { short: "JRTE", jif: 3.5, jifYear: 2025, name: "Journal of Research on Technology in Education", publisher: "Taylor & Francis", model: "Hybrid", url: "https://www.tandfonline.com/journals/ujrt20" },
+  ijmest: { short: "IJMEST", jif: 0.6, jifYear: 2024, name: "International Journal of Mathematical Education in Science and Technology", publisher: "Taylor & Francis", model: "Hybrid", url: "https://www.tandfonline.com/journals/tmes20" },
+  herd:   { short: "HERD", jif: 3.7, jifYear: 2025, name: "Higher Education Research & Development", publisher: "Taylor & Francis", model: "Hybrid", url: "https://www.tandfonline.com/journals/cher20" },
+  ijse:   { short: "IJSE", jif: 2.3, jifYear: 2024, name: "International Journal of Science Education", publisher: "Taylor & Francis", model: "Hybrid", url: "https://www.tandfonline.com/journals/tsed20" },
+  jsdse:  { short: "JSDSE", jif: 2.3, jifYear: 2025, name: "Journal of Statistics and Data Science Education", publisher: "Taylor & Francis", model: "Open access", url: "https://www.tandfonline.com/journals/ujse21" },
+  infedu: { short: "INFEDU", jif: 2.4, jifYear: 2025, name: "Informatics in Education", publisher: "Vilnius University", model: "Diamond OA", url: "https://infedu.vu.lt/journal/INFEDU" },
   jios:   { short: "JIOS", name: "Journal of Information and Organizational Sciences", publisher: "University of Zagreb", model: "Diamond OA", url: "https://jios.foi.hr/" },
   ijel:   { short: "IJEL", name: "International Journal on E-Learning", publisher: "AACE", model: "Subscription", url: "https://aace.org/pubs/ijel/" },
-  ets:    { short: "ET&S", name: "Educational Technology & Society", publisher: "IFETS", model: "Diamond OA", url: "https://www.j-ets.net/" },
+  ets:    { short: "ET&S", jif: 7.1, jifYear: 2025, name: "Educational Technology & Society", publisher: "IFETS", model: "Diamond OA", url: "https://www.j-ets.net/" },
   npjsol: { short: "npj SoL", name: "npj Science of Learning", publisher: "Nature Portfolio", model: "Open access", url: "https://www.nature.com/npjscilearn/" }
 };
 
