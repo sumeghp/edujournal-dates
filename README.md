@@ -6,7 +6,7 @@ Countdowns to special-issue deadlines in education journals: AI in education, le
 
 Most journals take regular submissions all year, so this site tracks the calls that do have fixed dates: **special issues, special sections and article collections**. Many of these run in two stages (an abstract or proposal first, then full papers from invited authors only), and each stage gets its own countdown.
 
-It is the journal counterpart to [Edu conferences dates](https://github.com/sumeghp/educonf-dates), inspired by [aideadlin.es](https://aideadlin.es/). A sister site, [DH conferences dates](https://github.com/sumeghp/dhconf-dates), tracks digital humanities conferences.
+It is the journal counterpart to [Edu conferences dates](https://github.com/sumeghp/educonf-dates). A sister site, [DH conferences dates](https://github.com/sumeghp/dhconf-dates), tracks digital humanities conferences.
 
 ## Features
 
