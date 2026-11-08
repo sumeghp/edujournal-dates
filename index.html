@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edu journal calls</title>
+<meta name="description" content="Countdowns to special-issue deadlines in education and edtech journals.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F6F9; --surface:#FFFFFF; --ink:#18213D; --muted:#636D85; --faint:#8D95A8; --line:#E2E5EC; --soft:#F0F2F6;
+  --soon:#B26A00; --urgent:#C2302B; --ok:#2E7D4F; --focus:#4C57C9;
+  --display:"Bricolage Grotesque", system-ui, sans-serif;
+  --body:"Instrument Sans", system-ui, sans-serif;
+}
+@font-face{font-family:"OpenDyslexic";font-weight:400;font-style:normal;font-display:swap;src:url(fonts/opendyslexic-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"OpenDyslexic";font-weight:700;font-style:normal;font-display:swap;src:url(fonts/opendyslexic-latin-700-normal.woff2) format("woff2")}
+:root[data-theme="dark"]{
+  --paper:#0F1527; --surface:#161E33; --ink:#E7EBF5; --muted:#A1ABC2; --faint:#7C86A0; --line:#263050; --soft:#1C2540;
+    --soon:#F0A93B; --urgent:#FF7369; --ok:#5DC48A; --focus:#8D96FF; }
+:root[data-theme="dark"]{color-scheme:dark}
+:root[data-dys="on"]{--body:"OpenDyslexic", system-ui, sans-serif;--display:"OpenDyslexic", system-ui, sans-serif}
+:root[data-dys="on"] body{font-size:14px;line-height:1.6}
+:root[data-dys="on"] .c-name b,:root[data-dys="on"] .c-cd{font-size:15px}
+:root[data-dys="on"] .clock b{font-size:24px}
+:root[data-dys="on"] header h1{font-size:28px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.num{font-variant-numeric:tabular-nums}
+
+header.top{padding:32px 0 6px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+header h1{font:700 34px/1 var(--display);letter-spacing:-.02em;margin:0}
+header p{margin:6px 0 0;color:var(--muted);max-width:60ch}
+
+/* ---------- hero ---------- */
+.hero{display:grid;grid-template-columns:300px 1fr;gap:16px;margin:22px 0 26px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.next{padding:20px;display:flex;flex-direction:column}
+.next .k{font-size:13px;color:var(--muted)}
+.next h2{font:700 28px/1.1 var(--display);margin:6px 0 2px;letter-spacing:-.01em}
+.next .what{font-size:14px;color:var(--muted)}
+.clock{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:22px 0 14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0}
+.clock div{text-align:center}
+.clock div+div{border-left:1px solid var(--line)}
+.clock b{display:block;font:700 30px/1 var(--display);font-variant-numeric:tabular-nums}
+.clock span{font-size:12px;color:var(--muted)}
+.next .when{font-size:13.5px}
+.next .go{padding-top:14px;display:flex;gap:8px}
+.upnext{margin-top:auto;padding-top:16px}
+.upnext h4{font:500 12.5px/1 var(--body);color:var(--muted);margin:0 0 6px}
+.upnext button{all:unset;cursor:pointer;display:grid;grid-template-columns:3px 1fr auto;gap:10px;align-items:center;width:100%;padding:6px 0;border-top:1px solid var(--line);font-size:13.5px}
+.upnext button:focus-visible{outline:2px solid var(--focus)}
+.upnext i{height:16px;border-radius:2px;background:var(--c)}
+.upnext span:last-child{color:var(--muted);font-variant-numeric:tabular-nums}
+.upnext button:hover b{text-decoration:underline}
+
+/* calendar widget */
+.cal{padding:14px 16px 16px;display:flex;flex-direction:column;min-width:0}
+.cal-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.cal-head h3{font:700 18px/1 var(--display);margin:0 auto 0 0}
+.iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:8px;height:30px;min-width:30px;padding:0 9px;cursor:pointer;font-size:13px;display:inline-flex;align-items:center;justify-content:center}
+.iconbtn:hover{background:var(--soft)}
+.iconbtn:disabled{opacity:.4;cursor:default}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line);border-radius:8px;overflow:hidden}
+.dow{font-size:11.5px;color:var(--muted);padding:5px 7px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--soft)}
+.day{min-height:64px;padding:4px 4px 5px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:3px;min-width:0}
+.day .d.m1{font-weight:600;color:var(--ink)}
+.day .d{font-size:12px;color:var(--muted);padding:1px 3px;align-self:flex-start;border-radius:5px}
+.day.out{background:color-mix(in srgb, var(--soft) 55%, transparent)}
+.day.out .d{color:var(--faint)}
+.day.today .d{background:var(--ink);color:var(--surface);font-weight:600}
+.day.pastday .ev{opacity:.5}
+.ev{display:block;width:100%;text-align:left;cursor:pointer;border:0;border-left:3px solid var(--c);background:color-mix(in srgb, var(--c) 13%, var(--surface));border-radius:4px;padding:2px 5px;font-size:11.5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev.est{background:transparent;outline:1px dashed color-mix(in srgb, var(--c) 60%, transparent);outline-offset:-1px}
+.ev:hover{background:color-mix(in srgb, var(--c) 24%, var(--surface))}
+.more{font-size:11px;color:var(--muted);padding-left:4px;cursor:pointer;border:0;background:none;text-align:left}
+.cal-foot{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:8px;flex-wrap:wrap}
+.cal-foot i{display:inline-block;width:14px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px;background:color-mix(in srgb,var(--muted) 25%,transparent);border-left:3px solid var(--muted)}
+.cal-foot i.e{background:transparent;outline:1px dashed var(--muted);outline-offset:-1px}
+
+/* ---------- toolbar ---------- */
+.toolbar{position:sticky;top:0;z-index:20;background:var(--paper);padding:10px 0 12px;border-bottom:1px solid var(--line)}
+.tb1{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.search{flex:1 1 170px;position:relative}
+.search input{width:100%;font:inherit;padding:8px 12px 8px 34px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink);height:36px}
+.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.field{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+select{font:inherit;font-size:14px;height:36px;padding:0 28px 0 10px;border:1px solid var(--line);border-radius:9px;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23636D85' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 10px center;color:var(--ink);appearance:none;-webkit-appearance:none}
+.tog{height:36px;padding:0 12px;border:1px solid var(--line);border-radius:9px;background:var(--surface);cursor:pointer;font-size:14px}
+.tog[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.topics{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.tp{max-width:100%}
+@media (max-width:560px){.tp{font-size:12.5px;height:28px;padding:0 9px}}
+.topics::-webkit-scrollbar{display:none}
+.tp{flex:none;cursor:pointer;font-size:13px;height:30px;padding:0 11px;border-radius:8px;border:1px solid var(--line);background:var(--surface);display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.tp::before{content:"";width:3px;height:13px;border-radius:2px;background:var(--c)}
+.tp[aria-pressed="true"]{border-color:var(--c);background:color-mix(in srgb, var(--c) 12%, var(--surface));font-weight:600}
+.tp.all::before{display:none}
+
+/* ---------- list ---------- */
+.summary{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:13.5px;margin:16px 0 10px}
+.group{font:600 13px/1 var(--body);color:var(--muted);margin:18px 0 8px;display:flex;align-items:center;gap:10px}
+.group::after{content:"";flex:1;height:1px;background:var(--line)}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.row{display:grid;grid-template-columns:4px minmax(0,2.2fr) minmax(0,1.4fr) minmax(0,1.5fr) 150px 40px;align-items:center;gap:0 16px;padding:0 10px 0 0;border-top:1px solid var(--line);cursor:pointer;min-height:64px}
+.row:first-child{border-top:0}
+.row:hover{background:color-mix(in srgb, var(--soft) 70%, transparent)}
+.row.past{color:var(--muted)}
+.stripe{align-self:stretch;background:var(--c)}
+.c-name{padding:10px 0;min-width:0}
+.c-name b{font:700 17px/1.15 var(--display);letter-spacing:-.005em}
+.rk.nr{font-weight:500;opacity:.6}
+.rk{font-weight:600;color:var(--muted);margin-left:0!important;font-size:.82em;letter-spacing:0}
+.c-name b span{font-weight:500;color:var(--muted);margin-left:4px;font-size:14px}
+.c-name div{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c-where{font-size:13.5px;min-width:0}
+.c-where div:last-child{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c-dl{font-size:13.5px;min-width:0}
+.c-dl .lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c-dl .dt{color:var(--muted);font-size:13px}
+.st{display:inline-block;font-size:11px;font-weight:600;margin-left:6px;padding:0 6px;border-radius:4px;line-height:17px;vertical-align:1px}
+.st.announced{color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent)}
+.st.provisional{color:var(--soon);background:color-mix(in srgb,var(--soon) 12%,transparent)}
+.st.estimated{color:var(--muted);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--muted) 45%,transparent)}
+.c-cd{text-align:right;font:600 17px/1.15 var(--display);font-variant-numeric:tabular-nums;white-space:nowrap}
+.c-cd small{display:block;font:400 12px var(--body);color:var(--muted)}
+.soon{color:var(--soon)} .urgent{color:var(--urgent)}
+.c-cd.done{font-size:14px;color:var(--muted)}
+.starbtn{width:32px;height:32px;border-radius:8px;border:0;background:transparent;cursor:pointer;color:var(--faint);display:grid;place-items:center}
+.starbtn:hover{background:var(--soft);color:var(--ink)}
+.starbtn[aria-pressed="true"]{color:#D4A20C}
+.detail{grid-column:1 / -1;cursor:default;background:var(--soft);border-top:1px solid var(--line);padding:14px 18px 16px 22px}
+.rk.oa{color:var(--ok);font-weight:600}
+.next .what.si{color:var(--ink);font-size:14.5px;margin:4px 0 6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.c-name .si2{white-space:normal!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--ink)!important;font-size:13.5px!important;line-height:1.35;margin-top:2px}
+.detail .jinfo{font-size:13px;color:var(--muted);margin-bottom:6px}
+.detail .jinfo b{color:var(--ink);font-weight:600}
+.detail table{width:100%;border-collapse:collapse;font-size:13.5px}
+.detail th{text-align:left;font-weight:500;color:var(--muted);font-size:12px;padding:0 10px 6px 0}
+.detail td{padding:7px 10px 7px 0;border-top:1px solid var(--line);vertical-align:top}
+.detail td.r{text-align:right;white-space:nowrap}
+.detail tr.gone td{color:var(--faint)}
+.detail .note{font-size:12.5px;color:var(--muted)}
+.detail p{font-size:13px;color:var(--muted);margin:10px 0 0}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{white-space:nowrap;font-size:13.5px;cursor:pointer;height:32px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.next .btn{flex:1;justify-content:center}
+.row.flash{animation:flash 1.6s ease}
+@keyframes flash{0%,40%{background:color-mix(in srgb,var(--c) 18%,transparent)}100%{background:transparent}}
+.empty{padding:34px;text-align:center;color:var(--muted)}
+
+/* prefs */
+header.top{padding:32px 130px 6px 24px}
+.prefs{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sw{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 12px 0 6px;border:1px solid var(--line);border-radius:999px;background:var(--surface);cursor:pointer;font-size:13.5px}
+.sw .knob{width:30px;height:18px;border-radius:999px;background:var(--line);position:relative;transition:background .15s}
+.sw .knob::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+.sw[aria-checked="true"] .knob{background:var(--focus)}
+.sw[aria-checked="true"] .knob::after{transform:translateX(12px)}
+.coffee{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border-radius:999px;background:#FFDD00;color:#1B1B1B;text-decoration:none;font-size:13.5px;font-weight:600;border:1px solid #E8C800}
+.coffee:hover{background:#FFE433}
+.fork{position:fixed;top:0;right:0;z-index:40;width:150px;height:150px;overflow:hidden;font-size:0;pointer-events:none}
+.fork::before{content:"Fork me on GitHub";pointer-events:auto;position:absolute;top:30px;right:-44px;width:200px;transform:rotate(45deg);background:var(--ink);color:var(--surface);text-align:center;font:600 12.5px/30px var(--body);letter-spacing:.02em;box-shadow:0 2px 6px rgba(0,0,0,.18);border-top:1px dashed color-mix(in srgb,var(--surface) 45%,transparent);border-bottom:1px dashed color-mix(in srgb,var(--surface) 45%,transparent)}
+.fork:hover::before{background:var(--focus)}
+.suggest{margin-top:28px;margin-bottom:6px}
+.suggest-box{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding:22px 24px;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.suggest h2{font:700 20px/1.2 var(--display);margin:0 0 4px}
+.suggest p{margin:0;color:var(--muted);max-width:56ch}
+.suggest-acts{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:700px){ header.top{padding:58px 14px 6px} .fork{width:96px;height:96px} .fork::before{top:18px;right:-58px;font-size:10.5px;line-height:24px} }
+.sig{position:relative;display:block;width:86px;height:56px;margin-left:auto;text-decoration:none;flex:none}
+.sig .plane{position:absolute;inset:0;background:#D39A2E;clip-path:polygon(0 0,100% 16%,100% 100%,0 82%);transition:background .15s}
+.sig .word{position:absolute;left:11px;top:21px;font:700 14px/1 "Instrument Sans",system-ui,sans-serif;letter-spacing:-.02em;color:#151417;white-space:nowrap;transition:color .15s}
+.sig .word span{color:#1B2A4A;transition:color .15s}
+.sig:hover .plane,.sig:focus-visible .plane{background:#9E2A2B}
+.sig:hover .word,.sig:focus-visible .word{color:#F7F4EB}
+.sig:hover .word span,.sig:focus-visible .word span{color:#D39A2E}
+.support{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink);font-size:14px}
+footer{padding:26px 0 44px;color:var(--muted);font-size:13px}
+footer p{max-width:78ch;margin:6px 0}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(16px);background:var(--ink);color:var(--surface);padding:9px 14px;border-radius:9px;font-size:13.5px;opacity:0;transition:.18s;z-index:60;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .row{grid-template-columns:4px minmax(0,1fr) auto 36px;grid-template-areas:"s n cd st" "s w w w" "s d d d";gap:2px 12px;padding:10px 8px 10px 0}
+  .stripe{grid-area:s} .c-name{grid-area:n;padding:0} .c-cd{grid-area:cd} .starbtn{grid-area:st}
+  .c-where{grid-area:w;display:flex;gap:8px;flex-wrap:wrap} .c-where div:last-child{white-space:normal}
+  .c-dl{grid-area:d}
+  .toolbar{position:static}
+}
+@media (max-width:560px){
+  .day{min-height:58px}
+  .ev{font-size:10.5px;padding:1px 3px}
+  .ev .lab{display:none}
+  .search{flex-basis:100%}
+  .wrap{padding:0 14px}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important;animation:none!important} }
+</style>
+</head>
+<body>
+<a class="fork" href="https://github.com/sumeghp/edujournal-dates" target="_blank" rel="noopener">Fork me on GitHub</a>
+<header class="top wrap">
+  <div>
+    <h1>Edu journal calls</h1>
+    <p>Special-issue deadlines in education journals: AI in education, learning analytics and the learning sciences, as well as STEM, higher, comparative and international education.</p>
+  </div>
+  <div class="prefs">
+    <button class="sw" id="swDark" role="switch" aria-checked="false"><span class="knob" aria-hidden="true"></span>Dark mode</button>
+    <button class="sw" id="swDys" role="switch" aria-checked="false"><span class="knob" aria-hidden="true"></span>OpenDyslexic font</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="panel next" id="next" aria-live="polite"></div>
+    <div class="panel cal">
+      <div class="cal-head">
+        <h3 id="calTitle"></h3>
+        <button class="iconbtn" id="calToday">Today</button>
+        <button class="iconbtn" id="calPrev" aria-label="Previous six weeks">‹</button>
+        <button class="iconbtn" id="calNext" aria-label="Next six weeks">›</button>
+      </div>
+      <div class="grid" id="calGrid"></div>
+      <div class="cal-foot"><span><i></i>Announced</span><span><i class="e"></i>Estimated</span><span>Click a deadline to open the call</span></div>
+    </div>
+  </section>
+
+  <section class="toolbar" aria-label="Sort and filter">
+    <div class="tb1">
+      <label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Search journals, topics, editors" aria-label="Search"></label>
+      <label class="field">Sort
+        <select id="sort">
+          <option value="deadline">Next deadline</option>
+          <option value="countdown-desc">Most time left</option>
+          <option value="journal">Journal (A–Z)</option>
+          <option value="final">Final deadline</option>
+        </select></label>
+      <select id="publisher" aria-label="Publisher"></select>
+      <select id="status" aria-label="Status">
+        <option value="">Any status</option><option value="announced">Announced only</option><option value="known">Hide estimates</option>
+      </select>
+      <select id="tz" aria-label="Time zone"></select>
+      <button class="tog" id="starOnly" aria-pressed="false">★ Starred</button>
+      <button class="tog" id="oaOnly" aria-pressed="false" title="Only open-access and diamond open-access journals">Open access</button>
+      <button class="tog" id="showPast" aria-pressed="false">Passed</button>
+    </div>
+    <div class="topics" id="topics" role="group" aria-label="Topics"></div>
+  </section>
+
+  <div class="summary"><span id="count"></span><span id="checked"></span></div>
+  <div id="list"></div>
+</main>
+
+<section class="wrap suggest"><div class="suggest-box">
+  <div>
+    <h2>Did I miss a call?</h2>
+    <p>If a special issue is missing or a date is wrong, send me the link to the call for papers and I'll add it.</p>
+  </div>
+  <div class="suggest-acts">
+    <button class="btn primary" id="emailMe">Email me</button>
+    <a class="btn" href="https://github.com/sumeghp/edujournal-dates/issues/new/choose" target="_blank" rel="noopener">Open a GitHub issue</a>
+  </div>
+</div></section>
+<footer class="wrap">
+  <p>Most journals take regular submissions all year; this page tracks <b>special issues and collections</b>, which have fixed deadlines. <b>Announced</b> means the date is on the journal's or publisher's own call page. <b>Provisional</b> means it comes from a third-party listing or an editor's post and hasn't been confirmed on the journal page yet. <b>Estimated</b> means the call isn't out yet and the date follows an earlier pattern. Always check the call itself before planning around a date.</p>
+  <p>Many calls run in two stages: an abstract or proposal first, then full papers from invited authors only. Deadlines without a stated time zone are treated as 23:59 Anywhere on Earth (UTC−12). Journal details (model, metrics) are as shown on the publisher's site; metrics are listed only where the publisher states them. Stars are saved in this browser.</p>
+  <p>Looking for conferences instead? See <a href="https://sumeghp.github.io/educonf-dates/">Edu conferences dates</a> and <a href="https://sumeghp.github.io/dhconf-dates/">DH conferences dates</a>.</p>
+
+  <div class="support"><span>Find this useful?</span><a class="coffee" href="https://buymeacoffee.com/sumeghp" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 9h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.5v2.5M11.5 2.5v2.5"/></svg>Buy me a coffee</a><a class="sig" href="https://sumeghp.github.io/" target="_blank" rel="noopener" aria-label="Homepage"><span class="plane" aria-hidden="true"></span><span class="word" aria-hidden="true">sumegh p<span>.</span></span></a></div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="data.js"></script>
+<script>
+(() => {
+const T = window.TOPICS, J = window.JOURNALS;
+const esc = s => String(s ?? "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const C = window.CALLS.map(c => { const j = J[c.journal]; return { ...c, short: j.short, jname: j.name, publisher: j.publisher, model: j.model, metric: j.metric || "", jurl: j.url }; });
+const $ = s => document.querySelector(s);
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+};
+const state = { q:"", topic:"", publisher:"", status:"", sort: store.get("ej.sort","deadline"), starOnly:false, oaOnly:false, showPast:false,
+  tz: store.get("ej.tz","local"), theme: store.get("ej.theme", matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"), dys: store.get("ej.dys", false), stars:new Set(store.get("ej.stars",[])), open:new Set(), calOffset:0 };
+const isOA = c => /open access|diamond/i.test(c.model);
+
+/* ---------- time ---------- */
+const TZS = [["local","My time zone"],["AoE","Anywhere on Earth"],["Asia/Kolkata","India (IST)"],["UTC","UTC"],["Europe/London","London"],
+  ["Europe/Berlin","Central Europe"],["America/New_York","US Eastern"],["America/Los_Angeles","US Pacific"],["Asia/Singapore","Singapore"],["Australia/Sydney","Sydney"]];
+function offMin(zone, ms){
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:zone,hourCycle:"h23",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"}).formatToParts(new Date(ms)).map(x=>[x.type,x.value]));
+  return (Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute,+p.second)-ms)/60000;
+}
+function deadlineMs(d){
+  const [Y,M,D]=d.date.split("-").map(Number), [h,m]=(d.time||"23:59").split(":").map(Number);
+  const wall=Date.UTC(Y,M-1,D,h,m,59), tz=d.tz||"AoE";
+  if (tz==="AoE") return wall+12*3600e3;
+  if (tz==="UTC") return wall;
+  return wall-offMin(tz, wall-offMin(tz,wall)*60000)*60000;
+}
+const zone = () => state.tz==="local" ? undefined : state.tz==="AoE" ? "Etc/GMT+12" : state.tz;
+function zAbbr(){ if (state.tz==="AoE") return "AoE"; if (state.tz==="local") return "";
+  try{ return new Intl.DateTimeFormat("en-GB",{timeZone:state.tz,timeZoneName:"short"}).formatToParts(new Date()).find(p=>p.type==="timeZoneName").value; }catch(e){ return ""; } }
+function fmt(ms, time=true){
+  const o={weekday:"short",day:"numeric",month:"short",year:"numeric",timeZone:zone()};
+  if (time){ o.hour="2-digit"; o.minute="2-digit"; o.hourCycle="h23"; }
+  return (new Intl.DateTimeFormat("en-GB",o).format(new Date(ms)) + (time? " "+zAbbr():"")).trim();
+}
+function ymdIn(ms){
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-CA",{timeZone:zone(),year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date(ms)).map(x=>[x.type,x.value]));
+  return `${p.year}-${p.month}-${p.day}`;
+}
+function parts(ms){ let s=Math.max(0,Math.floor(ms/1000)); const d=Math.floor(s/86400); s-=d*86400; const h=Math.floor(s/3600); s-=h*3600; const m=Math.floor(s/60); return {d,h,m,s:s-m*60}; }
+const pad = n => String(n).padStart(2,"0");
+function cdMain(ms){ if (ms<=0) return "Passed"; const p=parts(ms); return p.d>0 ? `${p.d} day${p.d===1?"":"s"}` : `${pad(p.h)}:${pad(p.m)}:${pad(p.s)}`; }
+function cdSub(ms){ if (ms<=0) return ""; const p=parts(ms); return p.d>0 ? `${pad(p.h)}h ${pad(p.m)}m ${pad(p.s)}s` : "left today"; }
+const urg = ms => ms<=0 ? "done" : ms<7*864e5 ? "urgent" : ms<30*864e5 ? "soon" : "";
+
+C.forEach(c => { c.deadlines.forEach(d=>d.ms=deadlineMs(d)); c.deadlines.sort((a,b)=>a.ms-b.ms); c.color=T[c.topics[0]].color; });
+const nextOf = (c,now) => c.deadlines.find(d=>d.ms>now) || null;
+const lastOf = c => c.deadlines[c.deadlines.length-1];
+
+function matches(c, now, ignorePast){
+  if (state.starOnly && !state.stars.has(c.id)) return false;
+  if (state.oaOnly && !isOA(c)) return false;
+  if (!ignorePast && !state.showPast && !nextOf(c,now)) return false;
+  if (state.topic && !c.topics.includes(state.topic)) return false;
+  if (state.publisher && c.publisher!==state.publisher) return false;
+  if (state.status){ const d=nextOf(c,now)||lastOf(c);
+    if (state.status==="announced" && d.status!=="announced") return false;
+    if (state.status==="known" && d.status==="estimated") return false; }
+  if (state.q){ const hay=[c.short,c.jname,c.title,c.publisher,c.model,c.editors,c.note,...c.topics.map(t=>T[t].label),...c.deadlines.map(d=>d.label)].join(" ").toLowerCase();
+    if (!state.q.toLowerCase().split(/\s+/).every(w=>hay.includes(w))) return false; }
+  return true;
+}
+
+/* ---------- calendar export ---------- */
+const icsD = ms => new Date(ms).toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
+const oa = c => isOA(c) ? `<span class="rk oa" title="${esc(c.model)}"> ${/diamond/i.test(c.model)?"◆ OA":"OA"}</span>` : "";
+const gcal = (c,d) => "https://calendar.google.com/calendar/render?"+new URLSearchParams({action:"TEMPLATE",text:`${c.short}: ${d.label} deadline`,dates:`${icsD(d.ms-3600e3)}/${icsD(d.ms)}`,details:`${c.jname}\nSpecial issue: ${c.title}\n${c.url}\nStatus: ${d.status}. Confirm on the call page.`});
+function ics(list){
+  const e = s => String(s).replace(/[\\,;]/g,m=>"\\"+m).replace(/\n/g,"\\n");
+  return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Edu journal calls//EN", ...list.map(([c,d])=>["BEGIN:VEVENT",`UID:${c.id}-${d.date}-${d.label.replace(/\W+/g,"")}@edujournal-dates`,`DTSTAMP:${icsD(Date.now())}`,`DTSTART:${icsD(d.ms-3600e3)}`,`DTEND:${icsD(d.ms)}`,`SUMMARY:${e(`${c.short}: ${d.label} deadline`)}`,`DESCRIPTION:${e(`${c.jname}, special issue "${c.title}" (${d.status}). ${c.url}`)}`,`URL:${c.url}`,"BEGIN:VALARM","TRIGGER:-P7D","ACTION:DISPLAY","DESCRIPTION:Deadline in one week","END:VALARM","END:VEVENT"].join("\r\n")),"END:VCALENDAR"].join("\r\n");
+}
+async function copy(text,msg){ try{ await navigator.clipboard.writeText(text); toast(msg); }catch(e){ toast("Copying isn't allowed here. Use Google Calendar instead."); } }
+let tt; function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("on"); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove("on"),2600); }
+
+/* ---------- controls ---------- */
+function initControls(){
+  $("#tz").innerHTML = TZS.map(([v,l])=>`<option value="${v}">${l}</option>`).join(""); $("#tz").value=state.tz;
+  $("#sort").value = state.sort;
+}
+function renderPublishers(){
+  const now=Date.now();
+  const n=k=>C.filter(c=>c.publisher===k && (state.showPast||nextOf(c,now))).length;
+  const list=[...new Set(C.map(c=>c.publisher))].filter(x=>n(x)>0 || x===state.publisher).sort();
+  $("#publisher").innerHTML=`<option value="">All publishers</option>`+list.map(k=>`<option value="${esc(k)}">${esc(k)} (${n(k)})</option>`).join("");
+  $("#publisher").value=state.publisher;
+}
+function renderTopics(){
+  const now=Date.now();
+  const n = k => C.filter(c=>(!k||c.topics.includes(k)) && (state.showPast||nextOf(c,now))).length;
+  $("#topics").innerHTML = `<button class="tp all" data-topic="" aria-pressed="${!state.topic}">All topics <span style="color:var(--muted)">${n("")}</span></button>` +
+    Object.entries(T).map(([k,t])=>`<button class="tp" style="--c:${t.color}" data-topic="${k}" aria-pressed="${state.topic===k}">${t.label} <span style="color:var(--muted)">${n(k)}</span></button>`).join("");
+}
+
+/* ---------- next deadline ---------- */
+function renderNext(){
+  const now=Date.now();
+  const pool=C.filter(c=>matches(c,now)&&nextOf(c,now)).map(c=>[c,nextOf(c,now)]).sort((a,b)=>a[1].ms-b[1].ms);
+  const el=$("#next");
+  if (!pool.length){ el.dataset.ms=""; el.innerHTML=`<div class="k">Next deadline</div><h2>None</h2><div class="what">Nothing upcoming matches your filters.</div>`; return; }
+  const [c,d]=pool[0]; el.dataset.ms=d.ms;
+  const filtered = state.topic||state.q||state.publisher||state.starOnly||state.oaOnly||state.status;
+  el.innerHTML=`<div class="k">Next deadline${filtered?" in your selection":""}</div>
+    <h2>${esc(c.short)}${oa(c)}</h2>
+    <div class="what si" title="${esc(c.title)}">${esc(c.title)}</div>
+    <div class="what">${esc(d.label)} <span class="st ${d.status}">${d.status}</span></div>
+    <div class="clock"><div><b data-u="d">0</b><span>days</span></div><div><b data-u="h">00</b><span>hours</span></div><div><b data-u="m">00</b><span>min</span></div><div><b data-u="s">00</b><span>sec</span></div></div>
+    <div class="when">${fmt(d.ms)}</div>
+    <div class="go"><button class="btn primary" data-jump="${c.id}">View details</button><a class="btn" href="${gcal(c,d)}" target="_blank" rel="noopener">Add to calendar</a></div>
+    ${pool.length>1?`<div class="upnext"><h4>After that</h4>${pool.slice(1,5).map(([c2,d2])=>`<button data-jump="${c2.id}" style="--c:${c2.color}" title="${esc(c2.title)}"><i></i><span><b style="font-weight:600">${esc(c2.short)}</b> ${esc(d2.label)}</span><span>${Math.ceil((d2.ms-now)/864e5)}d</span></button>`).join("")}</div>`:""}`;
+  tickNext();
+}
+function tickNext(){ const el=$("#next"); if(!el.dataset.ms) return; const p=parts(+el.dataset.ms-Date.now());
+  el.querySelector('[data-u="d"]').textContent=p.d; el.querySelector('[data-u="h"]').textContent=pad(p.h); el.querySelector('[data-u="m"]').textContent=pad(p.m); el.querySelector('[data-u="s"]').textContent=pad(p.s); }
+
+/* ---------- six-week calendar ---------- */
+function renderCal(){
+  const now=Date.now(), today=ymdIn(now);
+  const [ty,tm,td]=today.split("-").map(Number);
+  const t0=Date.UTC(ty,tm-1,td), dow=(new Date(t0).getUTCDay()+6)%7;
+  const start=t0-dow*864e5 + state.calOffset*6*7*864e5, end=start+42*864e5-1;
+  const f=o=>new Intl.DateTimeFormat("en-GB",{...o,timeZone:"UTC"});
+  const a=new Date(start), b=new Date(end);
+  $("#calTitle").textContent = a.getUTCFullYear()===b.getUTCFullYear()
+    ? `${f({day:"numeric",month:"short"}).format(a)} – ${f({day:"numeric",month:"short",year:"numeric"}).format(b)}`
+    : `${f({day:"numeric",month:"short",year:"numeric"}).format(a)} – ${f({day:"numeric",month:"short",year:"numeric"}).format(b)}`;
+  $("#calToday").disabled = state.calOffset===0;
+  const byDay={};
+  C.filter(c=>matches(c,now,true)).forEach(c=>c.deadlines.forEach(d=>{ (byDay[ymdIn(d.ms)] ||= []).push([c,d]); }));
+  let html=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d=>`<div class="dow">${d}</div>`).join("");
+  for (let i=0;i<42;i++){
+    const dt=new Date(start+i*864e5), key=dt.toISOString().slice(0,10), day=dt.getUTCDate();
+    const ev=(byDay[key]||[]).sort((x,y)=>x[1].ms-y[1].ms);
+    const cls=["day", (dt.getUTCMonth()%2)?"out":"", key===today?"today":"", key<today?"pastday":""].join(" ");
+    const lbl = day===1 || i===0 ? `<span class="d m1">${f({day:"numeric",month:"short"}).format(dt)}</span>` : `<span class="d">${day}</span>`;
+    const shown=ev.slice(0,2).map(([c,d])=>`<button class="ev ${d.status==='estimated'?'est':''}" style="--c:${c.color}" data-jump="${c.id}" title="${esc(c.short)}: ${esc(c.title)} — ${esc(d.label)} (${d.status})">${esc(c.short)}<span class="lab"> · ${esc(d.label)}</span></button>`).join("");
+    const more=ev.length>2?`<button class="more" data-jump="${ev[2][0].id}">+${ev.length-2} more</button>`:"";
+    html+=`<div class="${cls}">${key===today?`<span class="d">${day}</span>`:lbl}${shown}${more}</div>`;
+  }
+  $("#calGrid").innerHTML=html;
+}
+
+/* ---------- list ---------- */
+function sorted(list, now){
+  const nd = c => (nextOf(c,now)||lastOf(c)).ms;
+  const upcoming=list.filter(c=>nextOf(c,now)), past=list.filter(c=>!nextOf(c,now)).sort((a,b)=>lastOf(b).ms-lastOf(a).ms);
+  const by = { deadline:(a,b)=>nd(a)-nd(b), "countdown-desc":(a,b)=>nd(b)-nd(a), journal:(a,b)=>a.jname.localeCompare(b.jname)||nd(a)-nd(b), final:(a,b)=>lastOf(a).ms-lastOf(b).ms }[state.sort] || ((a,b)=>nd(a)-nd(b));
+  return state.sort==="journal" ? [[...upcoming, ...past].sort(by), []] : [upcoming.sort(by), past];
+}
+function renderList(){
+  const now=Date.now();
+  const shown=C.filter(c=>matches(c,now));
+  const [main, past]=sorted(shown, now);
+  const up=shown.filter(c=>nextOf(c,now)).length;
+  const nj=new Set(shown.map(c=>c.journal)).size;
+  $("#count").textContent = `${up} open call${up===1?"":"s"} in ${nj} journal${nj===1?"":"s"}` + (state.showPast?` · ${shown.length-up} passed`:"");
+  $("#checked").textContent = "Dates checked " + new Date(window.LAST_CHECKED+"T12:00:00Z").toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+  if (!shown.length){ $("#list").innerHTML=`<div class="list"><div class="empty">No calls match these filters.<br><br><button class="btn" id="clear">Clear filters</button></div></div>`; return; }
+  let html="";
+  if (state.sort==="deadline"){
+    let cur="", buf="";
+    main.forEach(c=>{ const m=new Intl.DateTimeFormat("en-GB",{month:"long",year:"numeric",timeZone:zone()}).format(new Date(nextOf(c,now).ms));
+      if (m!==cur){ if(buf) html+=`<div class="group">${cur}</div><div class="list">${buf}</div>`; cur=m; buf=""; }
+      buf+=row(c,now); });
+    if (buf) html+=`<div class="group">${cur}</div><div class="list">${buf}</div>`;
+  } else if (main.length) html+=`<div class="list" style="margin-top:6px">${main.map(c=>row(c,now)).join("")}</div>`;
+  if (past.length) html+=`<div class="group">Deadline passed</div><div class="list">${past.map(c=>row(c,now)).join("")}</div>`;
+  $("#list").innerHTML=html;
+}
+function row(c, now){
+  const nx=nextOf(c,now), d=nx||lastOf(c), left=d.ms-now, open=state.open.has(c.id), star=state.stars.has(c.id);
+  const more = c.deadlines.filter(x=>x.ms>now).length-1;
+  const detail = open ? `<div class="detail" data-stop>
+      <div class="jinfo"><b>${esc(c.jname)}</b> · ${esc(c.publisher)} · ${esc(c.model)}${c.metric?` · ${esc(c.metric)}`:""}</div>
+      ${c.editors?`<div class="jinfo">Guest editors: ${esc(c.editors)}</div>`:""}
+      <table><tr><th>Deadline</th><th>Status</th><th>Date (${state.tz==="local"?"your time":zAbbr()})</th><th style="text-align:right">Time left</th></tr>
+      ${c.deadlines.map(x=>`<tr class="${x.ms<=now?'gone':''}"><td>${esc(x.label)}${x.note?`<div class="note">${esc(x.note)}</div>`:""}</td><td><span class="st ${x.status}" style="margin:0">${x.status}</span></td><td class="num">${fmt(x.ms)}</td><td class="r num ${urg(x.ms-now)}">${x.ms<=now?"Passed":cdMain(x.ms-now)}</td></tr>`).join("")}</table>
+      ${c.note?`<p>${esc(c.note)}</p>`:""}
+      <div class="acts"><a class="btn primary" href="${esc(c.url)}" target="_blank" rel="noopener">Call for papers</a><a class="btn" href="${esc(c.jurl)}" target="_blank" rel="noopener">Journal home</a>
+      ${nx?`<a class="btn" href="${gcal(c,nx)}" target="_blank" rel="noopener">Add next deadline to Google Calendar</a><button class="btn" data-ics="${c.id}">Copy all as .ics</button>`:""}</div>
+    </div>` : "";
+  return `<div class="row ${nx?'':'past'}" id="c-${c.id}" style="--c:${c.color}" data-toggle="${c.id}" role="button" tabindex="0" aria-expanded="${open}">
+    <div class="stripe"></div>
+    <div class="c-name"><b>${esc(c.short)}${oa(c)}</b><div class="si2" title="${esc(c.title)}">${esc(c.title)}</div></div>
+    <div class="c-where"><div title="${esc(c.jname)}">${esc(c.jname)}</div><div>${esc(c.publisher)} · ${esc(c.model)}</div></div>
+    <div class="c-dl"><div class="lbl">${nx?"":"Last: "}${esc(d.label)}<span class="st ${d.status}">${d.status}</span></div><div class="dt num">${fmt(d.ms)}${more>0?` · +${more} more`:""}</div></div>
+    <div class="c-cd ${urg(left)}" data-cd="${d.ms}">${cdMain(left)}<small>${cdSub(left)}</small></div>
+    <button class="starbtn" data-star="${c.id}" aria-pressed="${star}" aria-label="${star?"Unstar":"Star"} ${esc(c.short)} call"><svg width="17" height="17" viewBox="0 0 24 24" fill="${star?"currentColor":"none"}" stroke="currentColor" stroke-width="1.8"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z" stroke-linejoin="round"/></svg></button>
+  </div>${detail}`;
+}
+
+function renderAll(){ renderPublishers(); renderTopics(); renderNext(); renderCal(); renderList(); }
+
+/* ---------- events ---------- */
+function resetFilters(){ Object.assign(state,{q:"",topic:"",publisher:"",status:"",starOnly:false,oaOnly:false}); $("#q").value=""; $("#status").value=""; $("#starOnly").setAttribute("aria-pressed","false"); $("#oaOnly").setAttribute("aria-pressed","false"); }
+function jump(id){
+  const c=C.find(x=>x.id===id), now=Date.now();
+  if (!matches(c,now)){ if(!nextOf(c,now)){ state.showPast=true; $("#showPast").setAttribute("aria-pressed","true"); } if(!matches(c,now)) resetFilters(); }
+  state.open.add(id); renderAll();
+  const el=document.getElementById("c-"+id);
+  el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
+  el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
+}
+document.addEventListener("click", e=>{
+  const t=e.target.closest("button, a, .row"); if(!t) return;
+  if (t.dataset.star){ e.stopPropagation(); const k=t.dataset.star; state.stars.has(k)?state.stars.delete(k):state.stars.add(k); store.set("ej.stars",[...state.stars]); toast(state.stars.has(k)?"Starred":"Star removed"); renderAll(); return; }
+  if (t.dataset.topic!==undefined){ state.topic=t.dataset.topic; renderAll(); return; }
+  if (t.dataset.ics){ const c=C.find(x=>x.id===t.dataset.ics); const l=c.deadlines.filter(d=>d.ms>Date.now()).map(d=>[c,d]); copy(ics(l),`Copied ${l.length} event${l.length>1?"s":""}. Save as a .ics file to import.`); return; }
+  if (t.dataset.jump){ jump(t.dataset.jump); return; }
+  if (t.dataset.toggle){ const k=t.dataset.toggle; state.open.has(k)?state.open.delete(k):state.open.add(k); renderList(); return; }
+  if (t.id==="oaOnly"){ state.oaOnly=!state.oaOnly; t.setAttribute("aria-pressed",state.oaOnly); renderAll(); return; }
+  if (t.id==="starOnly"){ state.starOnly=!state.starOnly; t.setAttribute("aria-pressed",state.starOnly); renderAll(); return; }
+  if (t.id==="showPast"){ state.showPast=!state.showPast; t.setAttribute("aria-pressed",state.showPast); renderAll(); return; }
+  if (t.id==="clear"){ resetFilters(); renderAll(); return; }
+  if (t.id==="calPrev"){ state.calOffset--; renderCal(); return; }
+  if (t.id==="calNext"){ state.calOffset++; renderCal(); return; }
+  if (t.id==="calToday"){ state.calOffset=0; renderCal(); return; }
+});
+document.addEventListener("keydown", e=>{ const r=e.target.closest&&e.target.closest(".row"); if(r && (e.key==="Enter"||e.key===" ") && e.target===r){ e.preventDefault(); r.click(); } });
+$("#q").addEventListener("input", e=>{ state.q=e.target.value.trim(); renderNext(); renderCal(); renderList(); });
+$("#sort").addEventListener("change", e=>{ state.sort=e.target.value; store.set("ej.sort",state.sort); renderList(); });
+$("#publisher").addEventListener("change", e=>{ state.publisher=e.target.value; renderAll(); });
+$("#status").addEventListener("change", e=>{ state.status=e.target.value; renderAll(); });
+$("#tz").addEventListener("change", e=>{ state.tz=e.target.value; store.set("ej.tz",state.tz); renderAll(); });
+
+setInterval(()=>{
+  const now=Date.now(); tickNext();
+  document.querySelectorAll("[data-cd]").forEach(el=>{ const ms=+el.dataset.cd-now; el.firstChild.nodeValue=cdMain(ms); const s=el.querySelector("small"); if(s) s.textContent=cdSub(ms);
+    el.classList.remove("soon","urgent","done"); const u=urg(ms); if(u) el.classList.add(u); });
+  if ([...document.querySelectorAll(".row:not(.past) .c-cd.done")].length) renderAll();
+},1000);
+
+function applyPrefs(){
+  const r=document.documentElement;
+  r.dataset.theme=state.theme; r.dataset.dys=state.dys?"on":"off";
+  $("#swDark").setAttribute("aria-checked", state.theme==="dark");
+  $("#swDys").setAttribute("aria-checked", state.dys);
+}
+$("#swDark").addEventListener("click",()=>{ state.theme=state.theme==="dark"?"light":"dark"; store.set("ej.theme",state.theme); applyPrefs(); });
+$("#swDys").addEventListener("click",()=>{ state.dys=!state.dys; store.set("ej.dys",state.dys); applyPrefs(); });
+// address assembled only on click, so it never appears in the page text or source as one string
+$("#emailMe").addEventListener("click",()=>{ const u=["sumegh","connect"].join("."), d=["gmail","com"].join(".");
+  const a=document.createElement("a"); a.href="mail"+"to:"+u+"@"+d+"?subject="+encodeURIComponent("Edu journal calls: special issue suggestion"); a.target="_blank"; a.rel="noopener"; document.body.appendChild(a); a.click(); a.remove();
+  toast("Opening your email app. If nothing opens, use the GitHub option."); });
+applyPrefs(); initControls(); renderAll();
+})();
+</script>
+</body>
+</html>

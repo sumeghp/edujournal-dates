@@ -1,0 +1,35 @@
+name: Suggest a call
+description: Add a missing special issue or correct a date
+title: "[Call] "
+labels: ["data"]
+body:
+  - type: input
+    id: journal
+    attributes:
+      label: Journal and special issue title
+      placeholder: e.g. Smart Learning Environments, "Reimagining assessment for learning in the age of generative AI"
+    validations:
+      required: true
+  - type: input
+    id: cfp
+    attributes:
+      label: Link to the call for papers
+      description: The journal's or publisher's own page, if possible.
+      placeholder: https://
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is this?
+      options:
+        - A missing call
+        - A wrong or outdated date
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Abstract and full-paper deadlines, time zone, guest editors, topic area, or anything else that helps.
